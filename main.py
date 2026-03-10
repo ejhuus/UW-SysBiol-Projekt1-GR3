@@ -12,6 +12,25 @@ obiekty przekazywane do run_simulation() w funkcji main() poniżej.
 Dostępne klasy bazowe do rozszerzeń: strategies.py
 """
 
+# IDEAS:
+# 2. Two sexes - they are random. ;o
+
+# 3. Men are not picky, woman are! 
+# Woman maximizes phenotype of possible male mates, man don't care that much but to some degree.
+
+# 4. Two chromosomes, two vector of phenotypes but they sum to one vector when calculating.
+# You have two vectors inside of you, calculating fitness is just mean of two vectors, 
+# when you reproduce you randomly give one vector to your child.
+
+# 5. Random environment, sinusoid plus sometimes can be const.
+
+# 6. Sexual fitness, it;s one variable. It represents how attractive is male.
+# It penelizes fitness function.
+
+# OPTIONAL
+# TRANS AGENDA 40 % FATALITY RATE
+
+
 import os
 import numpy as np
 
