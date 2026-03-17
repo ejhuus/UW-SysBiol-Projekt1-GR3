@@ -6,7 +6,7 @@ import numpy as np
 # PARAMETRY POPULACJI
 # -------------------
 N = 1000           # liczba osobników w populacji
-n = 4             # wymiar przestrzeni fenotypowej
+n = 10             # wymiar przestrzeni fenotypowej
 
 # Rozrzut początkowych fenotypów wokół optimum.
 # Zbyt duży → większość osobników ma fitness ≈ 0 i wymiera w pierwszym pokoleniu.
@@ -31,13 +31,16 @@ n = 4             # wymiar przestrzeni fenotypowej
 #   init_scale = 0.30  →  E[phi] ≈ 0.24   ← populacja ledwo przeżywa selekcję
 #   init_scale = 1.00  →  E[phi] ≈ 0.001  ← natychmiastowe wymarcie
 init_scale = 0.1   # = sigma / sqrt(n) = 0.2 / 2 = 0.1
+init_scale_tail = 0.15
+is_diploid = True # Czy osobnik jest diploidalny czy też haploidalny
+init_sex_ratio = 0.5 # Ratio samców/samic - liczba to procent samców 
 
 # --------------------
 # PARAMETRY MUTACJI
 # --------------------
-mu = 0.3          # prawdopodobieństwo mutacji dla osobnika
+mu = 0.1          # prawdopodobieństwo mutacji dla osobnika
 mu_c = 0.5        # prawdopodobieństwo mutacji konkretnej cechy, jeśli osobnik mutuje
-xi = 0.5         # odchylenie standardowe mutacji
+xi = 0.05         # odchylenie standardowe mutacji
                   # (mniejsze niż w 2D: w wyższych wymiarach duże kroki
                   #  są proporcjonalnie bardziej szkodliwe – tw. Fishera)
 
@@ -45,9 +48,10 @@ xi = 0.5         # odchylenie standardowe mutacji
 # PARAMETRY SELEKCJI
 # --------------------
 sigma = 0.2       # parametr w funkcji fitness (kontroluje siłę selekcji)
-threshold = 0.1  # próg selekcji progowej
+threshold = 0.01  # próg selekcji progowej
                   # (obniżony z 0.1 do 0.01: w 4D maksymalna tolerowana
                   #  odległość od optimum rośnie z 0.43 do 0.61)
+tail_cost = 0.01
 
 # --------------------
 # PARAMETRY ŚRODOWISKA

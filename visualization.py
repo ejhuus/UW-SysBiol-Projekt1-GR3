@@ -90,10 +90,13 @@ def _draw_phenotype_panel(ax, individuals: list, alpha: np.ndarray,
                             zorder=11)
 
     # --- 5. Chmura osobników – kolor = n-wymiarowe fitness ---
-    phenotypes = np.array([ind.get_phenotype() for ind in individuals])  # (N, n)
+    phenotypes = np.array([
+        ind.get_effective_phenotype()
+        for ind in individuals
+    ])
     x_pts = phenotypes[:, 0]
     y_pts = phenotypes[:, 1]
-    diff = phenotypes - alpha                                             # broadcasting
+    diff = phenotypes - alpha                                          # broadcasting
     full_fitness = np.exp(-np.einsum('ij,ij->i', diff, diff) / (2 * sigma**2))
 
     sc = ax.scatter(x_pts, y_pts, c=full_fitness, cmap='RdYlGn',

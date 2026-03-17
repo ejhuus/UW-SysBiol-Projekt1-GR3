@@ -12,25 +12,6 @@ obiekty przekazywane do run_simulation() w funkcji main() poniżej.
 Dostępne klasy bazowe do rozszerzeń: strategies.py
 """
 
-# IDEAS:
-# 2. Two sexes - they are random. ;o
-
-# 3. Men are not picky, woman are! 
-# Woman maximizes phenotype of possible male mates, man don't care that much but to some degree.
-
-# 4. Two chromosomes, two vector of phenotypes but they sum to one vector when calculating.
-# You have two vectors inside of you, calculating fitness is just mean of two vectors, 
-# when you reproduce you randomly give one vector to your child.
-
-# 5. Random environment, sinusoid plus sometimes can be const.
-
-# 6. Sexual fitness, it;s one variable. It represents how attractive is male.
-# It penelizes fitness function.
-
-# OPTIONAL
-# TRANS AGENDA 40 % FATALITY RATE
-
-
 import os
 import numpy as np
 
@@ -57,6 +38,8 @@ def run_simulation(
     max_generations: int = config.max_generations,
     frames_dir: str = None,
     verbose: bool = True,
+    target_size: int = None,
+    sigma: float = None,
 ) -> SimulationStats:
     """
     Uruchamia pętlę ewolucyjną i zwraca zebrane statystyki.
@@ -75,8 +58,15 @@ def run_simulation(
     :param max_generations:       liczba pokoleń do zasymulowania
     :param frames_dir:            katalog do zapisu klatek PNG (None = brak)
     :param verbose:               czy drukować postęp co 10 pokoleń
+    :param target_size:           docelowy rozmiar populacji (nadpisuje config.N)
+    :param sigma:                 parametr selekcji (nadpisuje config.sigma)
     :return:                      obiekt SimulationStats z wynikami
     """
+    if target_size is None:
+        target_size = config.N
+    if sigma is None:
+        sigma = config.sigma
+
     stats = SimulationStats()
 
     if frames_dir is not None:
@@ -97,19 +87,20 @@ def run_simulation(
             break
 
         # Krok 3: Reprodukcja
-        new_individuals = reproduction_strategy.reproduce(survivors, config.N)
+        new_individuals = reproduction_strategy.reproduce(survivors, target_size)
         population.set_individuals(new_individuals)
 
         # Zbieranie statystyk i zapis klatki (nowa populacja vs aktualne optimum)
-        stats.record(generation, population, alpha, config.sigma,
-                     reproduction_strategy=reproduction_strategy)
+        stats.record(generation, population, alpha, sigma,
+                     reproduction_strategy=reproduction_strategy,
+                     tail_cost=config.tail_cost)
 
         if frames_dir is not None:
             frame_path = os.path.join(frames_dir, f"frame_{generation:03d}.png")
             plot_frame(population, alpha, generation, stats,
                        save_path=frame_path, show_plot=False,
                        max_generations=max_generations,
-                       sigma=config.sigma)
+                       sigma=sigma)
 
         # Krok 4: Zmiana środowiska
         environment.update()
@@ -164,11 +155,16 @@ def main():
         n_dim=config.n,
         init_scale=config.init_scale,
         alpha_init=config.alpha0,   # populacja startuje blisko alpha0, nie wokół zera
+        is_diploid=config.is_diploid,
+        init_sex_ratio=config.init_sex_ratio,
+        init_scale_tail=config.init_scale_tail
     )
     selection = TwoStageSelection(
         sigma=config.sigma,
         threshold=config.threshold,
         N=config.N,
+        tail_cost=config.tail_cost
+
     )
     reproduction = AsexualReproduction()
     mutation = IsotropicMutation(

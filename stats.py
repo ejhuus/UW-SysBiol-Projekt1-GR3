@@ -73,7 +73,7 @@ class SimulationStats:
         self.alpha_history: List[np.ndarray] = []  # pozycja optimum w każdym pokoleniu
 
     def record(self, generation: int, population, alpha: np.ndarray,
-               sigma: float, reproduction_strategy=None) -> None:
+               sigma: float, reproduction_strategy=None, tail_cost=None) -> None:
         """Rejestruje stan populacji po kroku reprodukcji, przed zmianą środowiska."""
         from selection import compute_fitnesses
 
@@ -82,10 +82,10 @@ class SimulationStats:
             return
 
         self.alpha_history.append(alpha.copy())
-
-        phenotypes = np.array([ind.get_phenotype() for ind in individuals])
-        fitnesses = compute_fitnesses(individuals, alpha, sigma)
-
+        
+        # Różne wymiary w zależności czy osobnik jest diploidem czy nie.
+        phenotypes = np.array([ind.get_effective_phenotype() for ind in individuals])
+        fitnesses = compute_fitnesses(individuals, alpha, sigma, tail_cost)
         mean_phenotype = phenotypes.mean(axis=0)
         phenotype_variance = phenotypes.var(axis=0).mean()
         distance = float(np.linalg.norm(mean_phenotype - alpha))

@@ -32,12 +32,20 @@ class IsotropicMutation(MutationStrategy):
             self._mutate_individual(ind)
 
     def _mutate_individual(self, individual) -> None:
-        if np.random.rand() < self.mu:
+        if np.random.rand() < self.mu:  # mutuje osobnik
             phenotype = individual.get_phenotype().copy()
-            for i in range(len(phenotype)):
-                if np.random.rand() < self.mu_c:
-                    phenotype[i] += np.random.normal(0.0, self.xi)
+            # maska mutacji: działa zarówno dla haploida, jak i diploida
+            mask = np.random.rand(*phenotype.shape) < self.mu_c
+            phenotype[mask] += np.random.normal(0.0, self.xi, size=mask.sum())
+
             individual.set_phenotype(phenotype)
+        if individual.get_tail() is not None and individual.get_sex() == "M":
+            if np.random.rand() < self.mu_c:
+                tail = individual.get_tail() + np.random.normal(0.0, self.xi)
+                tail = np.clip(tail, 0.0, 1.0) # żeby ogon nie wyszedł poza przedział 0-1
+                individual.set_tail(tail)
+
+
 
 
 # ---------------------------------------------------------------------------
