@@ -2,6 +2,7 @@
 
 import numpy as np
 from individual import Individual
+from reproduction import SexualReproduction
 import random
 
 class Population:
@@ -9,7 +10,7 @@ class Population:
     Klasa przechowuje listę osobników (Individual)
     oraz pomaga w obsłudze różnych operacji na populacji.
     """
-    def __init__(self, size, n_dim, is_diploid, init_sex_ratio, init_scale: float = 0.1,
+    def __init__(self, size, n_dim, reproduction, init_sex_ratio, init_scale: float = 0.1,
                  init_scale_tail: float = 0.15, alpha_init=None):
         """
         Inicjalizuje populację losowymi fenotypami w n-wymiarach.
@@ -26,7 +27,7 @@ class Population:
         center = (np.array(alpha_init, dtype=float)
                   if alpha_init is not None else np.zeros(n_dim))
         self.individuals = []
-        if is_diploid:
+        if isinstance(reproduction, SexualReproduction):
             males = int(init_sex_ratio * size)
             females = size - males
             for _ in range(males):

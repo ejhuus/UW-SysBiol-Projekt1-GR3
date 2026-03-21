@@ -20,7 +20,7 @@ from environment import LinearShiftEnvironment
 from population import Population
 from mutation import IsotropicMutation
 from selection import TwoStageSelection
-from reproduction import AsexualReproduction
+from reproduction import AsexualReproduction, SexualReproduction
 from visualization import plot_population, plot_frame, plot_stats
 from stats import SimulationStats
 
@@ -150,12 +150,13 @@ def main():
         c=config.c,
         delta=config.delta,
     )
+    reproduction = SexualReproduction()
     pop = Population(
         size=config.N,
         n_dim=config.n,
         init_scale=config.init_scale,
         alpha_init=config.alpha0,   # populacja startuje blisko alpha0, nie wokół zera
-        is_diploid=config.is_diploid,
+        reproduction=reproduction,
         init_sex_ratio=config.init_sex_ratio,
         init_scale_tail=config.init_scale_tail
     )
@@ -166,7 +167,6 @@ def main():
         tail_cost=config.tail_cost
 
     )
-    reproduction = AsexualReproduction()
     mutation = IsotropicMutation(
         mu=config.mu,
         mu_c=config.mu_c,

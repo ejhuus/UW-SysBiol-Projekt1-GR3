@@ -11,12 +11,13 @@ from individual import Individual
 
 def fitness_function(individual: Individual, alpha: np.ndarray, sigma: float, tail_cost: float) -> float:
     """
-    Gaussowska funkcja fitness:
+    Gaussowska funkcja fitness z dodatkowym:
         phi_alpha(p) = exp( -||p - alpha||^2 / (2 * sigma^2) )
 
     :param phenotype: fenotyp osobnika
     :param alpha: optymalny fenotyp środowiska
     :param sigma: parametr siły selekcji (większe sigma = słabsza selekcja)
+    :param tail_cost: parametr wplywu ogona na selekcje
     :return: wartość fitness w przedziale (0, 1]
     """
     phenotype = individual.get_effective_phenotype()
