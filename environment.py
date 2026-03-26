@@ -36,6 +36,16 @@ class LinearShiftEnvironment(EnvironmentDynamics):
     def get_optimal_phenotype(self) -> np.ndarray:
         return self.alpha.copy()
 
+class PeriodicConstEnvironment(EnvironmentDynamics):
+    def __init__(self):
+        pass
+
+    def update(self) -> None:
+        pass
+
+    def get_optimal_phenotype(self):
+        pass
+
 
 # Alias dla kompatybilności wstecznej
 Environment = LinearShiftEnvironment
