@@ -20,9 +20,10 @@ from environment import LinearShiftEnvironment
 from population import Population
 from mutation import IsotropicMutation
 from selection import TwoStageSelection
-from reproduction import AsexualReproduction, SexualReproduction
+from reproduction import AsexualReproduction
 from visualization import plot_population, plot_frame, plot_stats
 from stats import SimulationStats
+from sexual_reproduction import SexualReproduction
 
 
 # ---------------------------------------------------------------------------
@@ -78,7 +79,7 @@ def run_simulation(
         # Krok 1: Mutacja
         mutation_strategy.mutate(population)
 
-        # Krok 2: Selekcja
+        # Krok 2: Selekcja naturalna 
         survivors = selection_strategy.select(population.get_individuals(), alpha)
         if not survivors:
             if verbose:
@@ -86,7 +87,7 @@ def run_simulation(
             stats.mark_extinct(generation)
             break
 
-        # Krok 3: Reprodukcja
+        # Krok 3: Selekcja seksualna i Reprodukcja
         new_individuals = reproduction_strategy.reproduce(survivors, target_size)
         population.set_individuals(new_individuals)
 

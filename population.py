@@ -2,7 +2,8 @@
 
 import numpy as np
 from individual import Individual
-from reproduction import SexualReproduction
+from reproduction import AsexualReproduction
+from sexual_reproduction import SexualReproduction
 import random
 
 class Population:
