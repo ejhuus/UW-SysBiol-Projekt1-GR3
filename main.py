@@ -17,6 +17,7 @@ import numpy as np
 
 import config
 from environment import LinearShiftEnvironment
+from periodic_environment import PeriodicConstEnvironment
 from population import Population
 from mutation import IsotropicMutation
 from selection import TwoStageSelection
@@ -145,17 +146,21 @@ def main():
         np.random.seed(config.seed)
 
     # --- Inicjalizacja komponentów ---
-    env = LinearShiftEnvironment(
-        alpha_init=config.alpha0,
-        c=config.c,
+    env = PeriodicConstEnvironment(
+        zero_crossing=config.zero_crossing,
+        amplitude=config.amplitude,
+        period=config.period,
+        phase=config.phase,
         delta=config.delta,
+        plateau_chance=config.plateau_chance,
+        mean_plateau_length=config.mean_plateau_length,
     )
     reproduction = SexualReproduction()
     pop = Population(
         size=config.N,
         n_dim=config.n,
         init_scale=config.init_scale,
-        alpha_init=config.alpha0,   # populacja startuje blisko alpha0, nie wokół zera
+        alpha_init=config.zero_crossing,   # populacja startuje blisko alpha0, nie wokół zera
         reproduction=reproduction,
         init_sex_ratio=config.init_sex_ratio,
         init_scale_tail=config.init_scale_tail

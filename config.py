@@ -57,9 +57,14 @@ tail_cost = 0.01
 # --------------------
 # UWAGA: alpha0 i c są wyprowadzane z n.
 # Wystarczy zmienić n powyżej – wektory środowiska dopasują się automatycznie.
-alpha0 = np.zeros(n)       # początkowy optymalny fenotyp
-c      = np.full(n, 0.01)  # kierunkowa zmiana α na pokolenie ("globalne ocieplenie")
-delta  = 0.01              # odchylenie std losowych fluktuacji wokół c
+zero_crossing = np.zeros(n)       # punkt równowagi optymalnego fenotypu
+amplitude = np.random.uniform(low=0.1, high=1,size =n) #TODO comment
+period = np.full(n, 20)
+phase = np.random.uniform(low=-0, high=0,size = n)
+delta = np.random.uniform(low=0, high=0.1,size = n)
+plateau_chance = 0.1
+mean_plateau_length = 8
+             # odchylenie std losowych fluktuacji
 max_generations = 200      # liczba pokoleń do zasymulowania
 
 # ----------------------
