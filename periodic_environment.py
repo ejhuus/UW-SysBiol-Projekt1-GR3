@@ -22,9 +22,9 @@ class PeriodicConstEnvironment(EnvironmentDynamics):
                  mean_plateau_length: float,
                  ):
         """
-            :param zero_crossing: punk zerowy, czyli wartość, wokół której oscyluje optimum.
+            :param zero_crossing: punk równowagi, czyli wartość, wokół której oscyluje optimum.
             :param delta: Wektor odchyleń std. losowych fluktuacji wokół funkcji (0 = brak szumu).
-            :param amplitude: Wektor amplitud funkcji, czyli największe możliwe odchylenie od punktu zerowego.
+            :param amplitude: Wektor amplitud funkcji, czyli największe możliwe odchylenie od punktu równowagi.
             :param period: Wektor okresów sinusoidy w generacjach.
             :param phase: Wektor faz sinusoidy w generacjach.
             :plateau_chance: Prawdopodobieństwo powstania równiny (zatrzymania się wszystkich wartości w wektorze na jakiś czas)

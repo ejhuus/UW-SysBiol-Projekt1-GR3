@@ -160,7 +160,9 @@ def main():
         size=config.N,
         n_dim=config.n,
         init_scale=config.init_scale,
-        alpha_init=config.zero_crossing,   # populacja startuje blisko alpha0, nie wokół zera
+        # punkt startowy optimum z uwzględnieniem fazy.
+        # w zależności od fazy pewne cechy mogą startować w znacznym oddaleniu od punktu równowagi
+        alpha_init=config.zero_crossing + config.amplitude * np.sin(config.phase),
         reproduction=reproduction,
         init_sex_ratio=config.init_sex_ratio,
         init_scale_tail=config.init_scale_tail
