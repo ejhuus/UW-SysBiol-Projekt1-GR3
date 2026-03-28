@@ -4,6 +4,14 @@ import numpy as np
 from strategies import EnvironmentDynamics
 
 class PeriodicConstEnvironment(EnvironmentDynamics):
+    """
+    Scenariusz okresowo zmieniającego się środowiska.
+    Każda cecha w optymalnym fenotypie przesuwa się niezależnie wzdłuż sinusoidy o zadanym punkcie
+    równowagi, okresie, amplitudzie i fazie z opcjonalnymi losowymi "równinami" - przedziałami czasu,
+    w którym wszystkie wartości wektora pozostają na stałym poziomie.
+    Długość przerwy jest losowana z rozkładu geometrycznego z parametrem p = 1/średnia długość przerwy
+    Możliwe też opcjonalne losowe fluktuacje w każdym pokoleniu.
+    """
 
     def __init__(self, zero_crossing: np.ndarray,
                  amplitude: np.ndarray,
@@ -14,13 +22,14 @@ class PeriodicConstEnvironment(EnvironmentDynamics):
                  mean_plateau_length: float,
                  ):
         """
-            :param zero_crossing: punk zerowy, czyli wartość wokół której "waha się" optimum.
-            :param delta: wektor odchyleń std. losowych fluktuacji wokół funkcji (0 = brak szumu)
-            :param amplitude: wektor amplitud funkcji, czyli największe możliwe odchylenie od punktu zerowego
-            :param period: wektor okresów sinusoidy w generacjach
-            :param phase: wektor faz sinusoidy w generacjach
-            :plateau_chance: prawdopodobieństwo równiny (zatrzymania się wartości w wektorze) w danej generacji
-            :param mean_plateau_length: średnia długość równiny (1/P(przerwa skończy się w danej generacji))
+            :param zero_crossing: punk zerowy, czyli wartość, wokół której oscyluje optimum.
+            :param delta: Wektor odchyleń std. losowych fluktuacji wokół funkcji (0 = brak szumu).
+            :param amplitude: Wektor amplitud funkcji, czyli największe możliwe odchylenie od punktu zerowego.
+            :param period: Wektor okresów sinusoidy w generacjach.
+            :param phase: Wektor faz sinusoidy w generacjach.
+            :plateau_chance: Prawdopodobieństwo powstania równiny (zatrzymania się wszystkich wartości w wektorze na jakiś czas)
+             w danej generacji.
+            :param mean_plateau_length: Średnia długość równiny (1/P(równina skończy się w danej generacji)) w rozkładzie geometrycznym.
 
         """
         # wave parameters
