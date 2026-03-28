@@ -22,7 +22,7 @@ class SexualReproduction(ReproductionStrategy):
     def create_male_hierarchy(self, males: list) -> tuple:
         
         # konwersja na ujemne wartości ogona, bo heapq to kopiec minimalny - chcemy mieć największe ogony na górze
-        males_neg_tails = [(-male.get_tail(), male) for male in males]
+        males_neg_tails = [(-male.get_tail(), idx,  male) for idx, male in enumerate(males)]
 
         # tworzenie kopca priorytetowego z posortowanej listy samców - nasza kolejka priorytetowa po samice
         heapify(males_neg_tails)
@@ -30,7 +30,7 @@ class SexualReproduction(ReproductionStrategy):
         # należy dodać głębokość kopca i przypisać do tupli, by obliczyć ilość samic przypadającą na danego samca 
         final_heap = []
 
-        for i, (neg_tail, male) in enumerate(males_neg_tails):
+        for i, (neg_tail, _ , male) in enumerate(males_neg_tails):
             depth = (i + 1).bit_length() - 1 # obliczenie głębokości w pełnym drzewie binarnym na podstawie indeksu
             final_heap.append((neg_tail, male, depth))
 
@@ -49,14 +49,15 @@ class SexualReproduction(ReproductionStrategy):
         # inicjalizacja słownika z partnerkami dla każdego samca
         breeding_dict = {male[1]: [] for male in male_hierarchy[0]}
 
-        # ważne metryki do doboru płciowego
-        fem_amount = len(females)
-
         for depth in hierarchy_dict.keys():
-            fems_per_layer = fem_amount // male_hierarchy[1] # ilość samic przypadająca na każdą warstwę kopca
+            fems_per_layer = len(females) // male_hierarchy[1] # ilość samic przypadająca na każdą warstwę kopca
 
             while fems_per_layer > 0:
                 for male in hierarchy_dict[depth]: # iteracja po samcach na danej głębokości
+
+                    if fems_per_layer == 0 or not females:
+                        break
+
                     breeding_dict[male].append(females[-1])
                     females.pop()
                     fems_per_layer -= 1
@@ -69,56 +70,66 @@ class SexualReproduction(ReproductionStrategy):
 
         # losowość jest inherentną cechą natury
         males = [ind for ind in survivors if ind.get_sex() == "M"]
-        males = random.shuffle(males)
+        random.shuffle(males)
 
         females = [ind for ind in survivors if ind.get_sex() == "F"]
-        females = random.shuffle(females)
+        random.shuffle(females)
 
         if not males or not females:
             self._last_counts = np.array([])
             return []
         
+        male_hierarchy = self.create_male_hierarchy(males)
+        breeding_dict = self.sexual_selection(male_hierarchy, females)
+        
         offspring = []
 
         male_counts = np.zeros(len(males), dtype=int)
 
-        for _ in range(target_size):
+        while target_size > 0:
 
-            # obecnie zwykłe losowanie partnera - PAWEŁ dodaj dobór płciowy.
-            father_idx = np.random.randint(len(males))
-            mother_idx = np.random.randint(len(females))
+            male_id = 0
 
-            father = males[father_idx]
-            mother = females[mother_idx]
+            for male in breeding_dict.keys():
 
-            male_counts[father_idx] += 1
 
-            # losowanie chromosomu ojca
-            father_pheno = father.get_phenotype()
-            chrom_father = father_pheno[np.random.randint(2)]
+                for female in breeding_dict[male]:
+                    
+                    if target_size == 0:
+                        break
+                
+                    male_counts[male_id] += 1
 
-            # losowanie chromosomu matki
-            mother_pheno = mother.get_phenotype()
-            chrom_mother = mother_pheno[np.random.randint(2)]
+                    # losowanie chromosomu ojca
+                    father_pheno = male.get_phenotype()
+                    chrom_father = father_pheno[np.random.randint(2)]
 
-            child_pheno = np.stack([chrom_father, chrom_mother])
+                    # losowanie chromosomu matki
+                    mother_pheno = female.get_phenotype()
+                    chrom_mother = mother_pheno[np.random.randint(2)]
 
-            # losowanie płci
-            sex = np.random.choice(["M", "F"])
+                    child_pheno = np.stack([chrom_father, chrom_mother])
 
-            # dziedziczenie ogona
-            if sex == "M":
-                tail = father.get_tail()
-            else:
-                tail = 0.0
+                    # losowanie płci
+                    sex = np.random.choice(["M", "F"])
 
-            child = Individual(
-                phenotype=child_pheno,
-                sex=sex,
-                tail=tail
-            )
+                    # dziedziczenie ogona
+                    if sex == "M":
+                        tail = male.get_tail()
+                    else:
+                        tail = 0.0
 
-            offspring.append(child)
+                    child = Individual(
+                        phenotype=child_pheno,
+                        sex=sex,
+                        tail=tail
+                    )
+
+                    offspring.append(child)
+
+                    target_size -= 1
+                
+                male_id += 1
 
         self._last_counts = male_counts
         return offspring
