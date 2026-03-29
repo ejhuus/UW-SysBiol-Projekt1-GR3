@@ -37,22 +37,22 @@ init_sex_ratio = 0.5 # Ratio samców/samic - liczba to procent samców
 # --------------------
 # PARAMETRY MUTACJI
 # --------------------
-mu = 0.3          # prawdopodobieństwo mutacji dla osobnika
+mu = 0.35          # prawdopodobieństwo mutacji dla osobnika
 mu_c = 0.5        # prawdopodobieństwo mutacji konkretnej cechy, jeśli osobnik mutuje
-xi = 0.15         # odchylenie standardowe mutacji
+xi = 0.2         # odchylenie standardowe mutacji
                   # (mniejsze niż w 2D: w wyższych wymiarach duże kroki
                   #  są proporcjonalnie bardziej szkodliwe – tw. Fishera)
 tail_c = 0.15 # odchylenie standardowe mutacji ogona
 # --------------------
 # PARAMETRY SELEKCJI
 # --------------------
-sigma = 0.3       # parametr w funkcji fitness (kontroluje siłę selekcji)
-threshold = 0.01  # próg selekcji progowej
+sigma = 0.4       # parametr w funkcji fitness (kontroluje siłę selekcji)
+threshold = 0.1  # próg selekcji progowej
                   # (obniżony z 0.1 do 0.01: w 4D maksymalna tolerowana
                   #  odległość od optimum rośnie z 0.43 do 0.61)
 tail_cost = 0.6
-tail_temperature = 1 # Stała kontroluje, jak bardzo 'elitarystyczny' jest dobór. Im mniejsza wartość (np. 0.5), tym bardziej faworyzowani są tylko najlepsi.
-bias = 0.01 # stały wzrost długości ogona, kierunkowa mutacja w stronę dłuższych ogonów. Czym większa tym mocniejszy wzrost długości u potomków.
+tail_temperature = 0.5 # Stała kontroluje, jak bardzo 'elitarystyczny' jest dobór. Im mniejsza wartość (np. 0.5), tym bardziej faworyzowani są tylko najlepsi.
+bias = 0.02 # stały wzrost długości ogona, kierunkowa mutacja w stronę dłuższych ogonów. Czym większa tym mocniejszy wzrost długości u potomków.
 
 # --------------------
 # PARAMETRY ŚRODOWISKA
@@ -64,7 +64,7 @@ amplitude = np.random.uniform(low=0, high=0.3,size =n) # Wektor amplitud, czyli 
 period = np.full(n, 40)                        # Wektor okresów sinusoidy w generacjach.
 phase = np.random.uniform(low=-0.5, high=0.5,size = n)     # Wektor faz sinusoidy w generacjach.
 delta = np.random.uniform(low=0, high=0.01,size = n)   # Wektor odchyleń std. losowych fluktuacji wokół funkcji (0 = brak szumu).
-plateau_chance = 0.1                                   # Prawdopodobieństwo powstania równiny (zatrzymania się wszystkich wartości w wektorze na jakiś czas) w danej generacji.
+plateau_chance = 0.2                                   # Prawdopodobieństwo powstania równiny (zatrzymania się wszystkich wartości w wektorze na jakiś czas) w danej generacji.
 mean_plateau_length = 8                                # Średnia długość równiny w rozkładzie geometrycznym.
 
 max_generations = 200      # liczba pokoleń do zasymulowania

@@ -158,7 +158,7 @@ def main():
         plateau_chance=config.plateau_chance,
         mean_plateau_length=config.mean_plateau_length,
     )
-    reproduction = HierarchySexualReproduction(config.tail_temperature, config.tail_c, config.bias)
+    reproduction = AsexualReproduction()
     pop = Population(
         size=config.N,
         n_dim=config.n,
