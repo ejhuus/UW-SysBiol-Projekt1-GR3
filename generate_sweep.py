@@ -13,8 +13,8 @@ base_config = {
 }
 
 reproduction = ["sexual","asexual"]
-sigmas = [0.2, 0.15, 0.1]
-thresholds = [0.01, 0.05, 0.1]
+sigmas = [0.2, 0.1]
+thresholds = [0.01, 0.2]
 
 output_dir = "experiments/param_sweep"
 os.makedirs(output_dir, exist_ok=True)
