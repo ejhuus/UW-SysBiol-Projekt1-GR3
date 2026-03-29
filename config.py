@@ -60,7 +60,7 @@ tail_cost = 0.01
 zero_crossing = np.zeros(n)                            # punkt równowagi optymalnego fenotypu
 amplitude = np.random.uniform(low=0, high=0.3,size =n) # Wektor amplitud, czyli największe możliwe odchylenie każdej z n cech fenotypu od punktu równowagi.
 period = np.full(n, 40)                        # Wektor okresów sinusoidy w generacjach.
-phase = np.random.uniform(low=-0, high=0,size = n)     # Wektor faz sinusoidy w generacjach.
+phase = np.random.uniform(low=-0.5, high=0.5,size = n)     # Wektor faz sinusoidy w generacjach.
 delta = np.random.uniform(low=0, high=0.01,size = n)   # Wektor odchyleń std. losowych fluktuacji wokół funkcji (0 = brak szumu).
 plateau_chance = 0.1                                   # Prawdopodobieństwo powstania równiny (zatrzymania się wszystkich wartości w wektorze na jakiś czas) w danej generacji.
 mean_plateau_length = 8                                # Średnia długość równiny w rozkładzie geometrycznym.
