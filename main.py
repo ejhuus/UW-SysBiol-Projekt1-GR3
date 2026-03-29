@@ -150,15 +150,15 @@ def main():
 
     # --- Inicjalizacja komponentów ---
     env = PeriodicConstEnvironment(
-        zero_crossing=config.zero_crossing,
-        amplitude=config.amplitude,
-        period=config.period,
-        phase=config.phase,
-        delta=config.delta,
         plateau_chance=config.plateau_chance,
         mean_plateau_length=config.mean_plateau_length,
+        n = config.n
     )
-    reproduction = AsexualReproduction()
+    reproduction = ProbabilitySexualReproduction(
+        tail_c=config.tail_cost,
+        temperature=config.tail_temperature,
+        bias=config.bias,
+    )
     pop = Population(
         size=config.N,
         n_dim=config.n,

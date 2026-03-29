@@ -70,13 +70,20 @@ def _run_replicate(args: tuple) -> tuple:
     """
     cfg, seed, idx = args
 
+    import os
     import numpy as np
-    from population import Population
+    from main import run_simulation
+    import config
     from environment import LinearShiftEnvironment
+    from periodic_environment import PeriodicConstEnvironment
+    from population import Population
+    from mutation import IsotropicMutation
     from selection import TwoStageSelection
     from reproduction import AsexualReproduction
-    from mutation import IsotropicMutation
-    from main import run_simulation
+    from visualization import plot_population, plot_frame, plot_stats, plot_environment_optimum
+    from stats import SimulationStats
+    from hierarchy_sexual_reproduction import HierarchySexualReproduction
+    from probability_sexual_reproduction import ProbabilitySexualReproduction
 
     np.random.seed(seed)
 
@@ -87,14 +94,50 @@ def _run_replicate(args: tuple) -> tuple:
     c_raw = cfg.get('c', 0.01)
     c = np.full(n, c_raw) if np.isscalar(c_raw) else np.array(c_raw, dtype=float)
 
-    pop = Population(cfg['N'], n, cfg['init_scale'], alpha_init=alpha0)
-    env = LinearShiftEnvironment(alpha0.copy(), c.copy(), cfg.get('delta', 0.01))
-    sel = TwoStageSelection(cfg['sigma'], cfg['threshold'], cfg['N'])
-    rep = AsexualReproduction()
-    mut = IsotropicMutation(cfg['mu'], cfg['mu_c'], cfg['xi'])
+    '''
+        pop = Population(cfg['N'], n, cfg['init_scale'], cfg['init_sex_ratio'], alpha_init=alpha0)
+        env = LinearShiftEnvironment(alpha0.copy(), c.copy(), cfg.get('delta', 0.01))
+        sel = TwoStageSelection(cfg['sigma'], cfg['threshold'], cfg['N'])
+        rep = AsexualReproduction()
+        mut = IsotropicMutation(cfg['mu'], cfg['mu_c'], cfg['xi'])
+    '''
+
+    env = PeriodicConstEnvironment(
+        plateau_chance=cfg['plateau_chance'],
+        mean_plateau_length=cfg['mean_plateau_length'],
+        n = cfg['n']
+    )
+    reproduction = ProbabilitySexualReproduction(
+        tail_c=cfg['tail_c'],
+        temperature=cfg['temperature'],
+        bias=cfg['bias'],
+    )
+    pop = Population(
+        size=cfg['N'],
+        n_dim=cfg['n'],
+        init_scale=cfg['init_scale'],
+        # punkt startowy optimum z uwzględnieniem fazy.
+        # w zależności od fazy pewne cechy mogą startować w znacznym oddaleniu od punktu równowagi
+        alpha_init=cfg['zero_crossing'] + cfg['amplitude'] * np.sin(cfg['phase']),
+        reproduction=reproduction,
+        init_sex_ratio=cfg['init_sex_ratio'],
+        init_scale_tail=cfg['init_scale_tail']
+    )
+    selection = TwoStageSelection(
+        sigma=cfg['sigma'],
+        threshold=cfg['threshold'],
+        N=cfg['N'],
+        tail_cost=cfg['tail_cost']
+
+    )
+    mutation = IsotropicMutation(
+        mu=cfg['mu'],
+        mu_c=cfg['mu_c'],
+        xi=cfg['xi'],
+    )
 
     stats = run_simulation(
-        pop, env, sel, rep, mut,
+        pop, env, selection, reproduction, mutation,
         max_generations=cfg['max_generations'],
         frames_dir=None,
         verbose=False,

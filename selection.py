@@ -23,7 +23,12 @@ def fitness_function(individual: Individual, alpha: np.ndarray, sigma: float, ta
     phenotype = individual.get_effective_phenotype()
     diff = (phenotype - alpha)
     base_fitness = float(np.exp(-np.dot(diff, diff) / (2 * sigma ** 2)))
-    tail = individual.get_tail() if individual.get_tail() is not None else 0.0
+
+    if individual.get_tail() is None: 
+        tail = 0.0  # Brak ogona = brak kosztu
+    else:
+        tail = individual.get_tail()
+
     # Jeżeli samica lub nie ma ogona to nie ma wpływu na dostosowanie.
     return base_fitness * (1 - tail * tail_cost)
 
