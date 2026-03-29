@@ -8,7 +8,7 @@ from individual import Individual
 from heapq import heappop, heappush, heapify
 import random
 
-class SexualReproduction(ReproductionStrategy):
+class HierarchySexualReproduction(ReproductionStrategy):
     """
     Reprodukcja płciowa z uwzględnieniem doboru płciowego:
     Samiec losuje partnerki, aby uzyskać dokładnie target_size osobników nowego pokolenia.
@@ -16,8 +16,10 @@ class SexualReproduction(ReproductionStrategy):
     populacja nie wymarła i podtrzymany był target_size.
     """
 
-    def __init__(self):
+    def __init__(self, temperature:float, tail_c: float, bias: float):
         self._last_counts: np.ndarray = np.array([])
+        self.tail_c = tail_c
+        self.bias = bias
 
     def create_male_hierarchy(self, males: list) -> tuple:
         
@@ -115,7 +117,10 @@ class SexualReproduction(ReproductionStrategy):
 
                     # dziedziczenie ogona
                     if sex == "M":
-                        tail = male.get_tail()
+                        father_tail = male.get_tail()
+                        mutation_noise = np.random.normal(0, self.tail_c) 
+                        new_tail = father_tail + self.bias + mutation_noise
+                        tail = np.clip(new_tail, 0.0, 1.0)
                     else:
                         tail = 0.0
 
@@ -152,4 +157,4 @@ class SexualReproduction(ReproductionStrategy):
 
 
 def sexual_reproduction(survivors: list, N: int) -> list:
-    return SexualReproduction().reproduce(survivors, N)
+    return HierarchySexualReproduction.reproduce(survivors, N)

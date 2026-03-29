@@ -176,7 +176,7 @@ def plot_stats(stats, save_path: str = None, show_plot: bool = True) -> None:
     """
     gens = stats.generations
     has_repro = stats.n_parents_series.sum() > 0
-    n_rows = 2 if has_repro else 1
+    n_rows = 3 if has_repro else 1
 
     fig, axes = plt.subplots(n_rows, 3, figsize=(15, 4 * n_rows))
     if n_rows == 1:
@@ -228,6 +228,19 @@ def plot_stats(stats, save_path: str = None, show_plot: bool = True) -> None:
         axes[1, 2].set_title('Maks. płodność (najlepszy osobnik)')
         axes[1, 2].set_xlabel('Pokolenie')
         axes[1, 2].set_ylabel('Potomkowie (max)')
+
+        # RZĄD 3 
+        ax_tail = axes[2, 0]
+        ax_tail.plot(gens, stats.mean_tails_series, color='gold', lw=2, label='Średni ogon (samce)')
+        ax_tail.fill_between(gens, stats.mean_tails_series, alpha=0.2, color='gold')
+        ax_tail.set_title("Ewolucja długości ogona")
+        ax_tail.set_xlabel("Pokolenie")
+        ax_tail.set_ylabel("Długość ogona")
+        ax_tail.set_ylim(0, 1.1)
+        ax_tail.grid(True, alpha=0.3)
+        ax_tail.legend()
+        axes[2, 1].axis('off') 
+        axes[2, 2].axis('off')
 
     plt.tight_layout()
     if save_path:

@@ -24,8 +24,8 @@ from selection import TwoStageSelection
 from reproduction import AsexualReproduction
 from visualization import plot_population, plot_frame, plot_stats, plot_environment_optimum
 from stats import SimulationStats
-from sexual_reproduction import SexualReproduction
-
+from hierarchy_sexual_reproduction import HierarchySexualReproduction
+from probability_sexual_reproduction import ProbabilitySexualReproduction
 
 # ---------------------------------------------------------------------------
 # Główna pętla symulacji
@@ -112,7 +112,9 @@ def run_simulation(
             print(f"  Pokolenie {generation:4d} | "
                   f"śr. fitness: {r.mean_fitness:.3f} | "
                   f"dist. od optimum: {r.distance_from_optimum:.3f} | "
-                  f"var. fenotyp.: {r.phenotype_variance:.3f}")
+                  f"var. fenotyp.: {r.phenotype_variance:.3f} | "
+                  f"śr. długość ogona: {r.mean_tail:.4f} | "
+            )
 
     return stats
 
@@ -156,7 +158,7 @@ def main():
         plateau_chance=config.plateau_chance,
         mean_plateau_length=config.mean_plateau_length,
     )
-    reproduction = SexualReproduction()
+    reproduction = HierarchySexualReproduction(config.tail_temperature, config.tail_c, config.bias)
     pop = Population(
         size=config.N,
         n_dim=config.n,

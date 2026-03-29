@@ -42,7 +42,7 @@ mu_c = 0.5        # prawdopodobieństwo mutacji konkretnej cechy, jeśli osobnik
 xi = 0.15         # odchylenie standardowe mutacji
                   # (mniejsze niż w 2D: w wyższych wymiarach duże kroki
                   #  są proporcjonalnie bardziej szkodliwe – tw. Fishera)
-
+tail_c = 0.15 # odchylenie standardowe mutacji ogona
 # --------------------
 # PARAMETRY SELEKCJI
 # --------------------
@@ -50,7 +50,9 @@ sigma = 0.3       # parametr w funkcji fitness (kontroluje siłę selekcji)
 threshold = 0.01  # próg selekcji progowej
                   # (obniżony z 0.1 do 0.01: w 4D maksymalna tolerowana
                   #  odległość od optimum rośnie z 0.43 do 0.61)
-tail_cost = 0.2
+tail_cost = 0.6
+tail_temperature = 1 # Stała kontroluje, jak bardzo 'elitarystyczny' jest dobór. Im mniejsza wartość (np. 0.5), tym bardziej faworyzowani są tylko najlepsi.
+bias = 0.01 # stały wzrost długości ogona, kierunkowa mutacja w stronę dłuższych ogonów. Czym większa tym mocniejszy wzrost długości u potomków.
 
 # --------------------
 # PARAMETRY ŚRODOWISKA

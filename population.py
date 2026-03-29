@@ -3,7 +3,8 @@
 import numpy as np
 from individual import Individual
 from reproduction import AsexualReproduction
-from sexual_reproduction import SexualReproduction
+from hierarchy_sexual_reproduction import HierarchySexualReproduction
+from probability_sexual_reproduction import ProbabilitySexualReproduction
 import random
 
 class Population:
@@ -28,7 +29,7 @@ class Population:
         center = (np.array(alpha_init, dtype=float)
                   if alpha_init is not None else np.zeros(n_dim))
         self.individuals = []
-        if isinstance(reproduction, SexualReproduction):
+        if isinstance(reproduction, HierarchySexualReproduction) or isinstance(reproduction, ProbabilitySexualReproduction):
             males = int(init_sex_ratio * size)
             females = size - males
             for _ in range(males):

@@ -32,7 +32,7 @@ class GenerationRecord:
     max_offspring: int    = 0    # maksymalna płodność ("zwycięzca ewolucyjny")
     # --- Pole rozszerzenia – studenci mogą tu dodać własne metryki ---
     # Przykład użycia w własnej symulacji:
-    #   stats.records[-1].extra['moja_metryka'] = wartość
+    mean_tail: float = 0.0
     extra: dict           = field(default_factory=dict)
 
 
@@ -91,6 +91,10 @@ class SimulationStats:
         distance = float(np.linalg.norm(mean_phenotype - alpha))
         mean_fitness = float(fitnesses.mean())
 
+        males = [ind for ind in individuals if ind.get_sex() == "M"]
+        tails = np.array([ind.get_tail() for ind in males])
+        mean_tail = float(tails.mean()) if len(tails) > 0 else 0.0
+
         # Statystyki reprodukcji (jeśli strategia je udostępnia)
         repro = (reproduction_strategy.get_reproduction_stats()
                  if reproduction_strategy is not None else None) or {}
@@ -105,6 +109,7 @@ class SimulationStats:
             n_parents=repro.get('n_parents', 0),
             median_offspring=repro.get('median_offspring', 0.0),
             max_offspring=repro.get('max_offspring', 0),
+            mean_tail=mean_tail
         ))
 
     def mark_extinct(self, generation: int) -> None:
@@ -145,6 +150,10 @@ class SimulationStats:
     def max_offspring_series(self) -> np.ndarray:
         return np.array([r.max_offspring for r in self.records])
 
+    @property
+    def mean_tails_series(self) -> np.ndarray:
+        return np.array([r.mean_tail for r in self.records])
+
     # --- Użytkowe metody ---
 
     def survived(self) -> bool:
@@ -168,5 +177,6 @@ class SimulationStats:
             f"Pokoleń: {last.generation + 1} | Status: {status}\n"
             f"Ostatnie śr. fitness: {last.mean_fitness:.4f} | "
             f"Odległość od optimum: {last.distance_from_optimum:.4f} | "
-            f"Wariancja fenotypowa: {last.phenotype_variance:.4f}"
+            f"Wariancja fenotypowa: {last.phenotype_variance:.4f} |"
+            f"Średnia długość ogona: {last.mean_tail:.4f}"
         )
