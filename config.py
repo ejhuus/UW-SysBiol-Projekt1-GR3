@@ -50,7 +50,7 @@ sigma = 0.3       # parametr w funkcji fitness (kontroluje siłę selekcji)
 threshold = 0.01  # próg selekcji progowej
                   # (obniżony z 0.1 do 0.01: w 4D maksymalna tolerowana
                   #  odległość od optimum rośnie z 0.43 do 0.61)
-tail_cost = 0.01
+tail_cost = 0.2
 
 # --------------------
 # PARAMETRY ŚRODOWISKA

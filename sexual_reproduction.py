@@ -134,6 +134,21 @@ class SexualReproduction(ReproductionStrategy):
         self._last_counts = male_counts
         return offspring
 
+    def get_reproduction_stats(self) -> dict:
+        """
+        Zwraca statystyki z ostatniego reproduce():
+        n_parents       – ilu osobników miało ≥1 potomka ("ewolucyjny sukces")
+        median_offspring – mediana potomków wśród reprodukujących się osobników
+        max_offspring   – maksymalna płodność (najlepiej przystosowany osobnik)
+        """
+        if len(self._last_counts) == 0:
+            return {'n_parents': 0, 'median_offspring': 0.0, 'max_offspring': 0}
+        reproducing = self._last_counts[self._last_counts > 0]
+        return {
+            'n_parents':        int(len(reproducing)),
+            'median_offspring': float(np.median(reproducing)) if len(reproducing) else 0.0,
+            'max_offspring':    int(self._last_counts.max()),
+        }
 
 
 def sexual_reproduction(survivors: list, N: int) -> list:
