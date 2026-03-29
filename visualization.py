@@ -3,6 +3,8 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
+import population
+
 
 def _draw_phenotype_panel(ax, individuals: list, alpha: np.ndarray,
                           sigma: float, window_size: float,
@@ -325,3 +327,28 @@ def plot_frame(population, alpha: np.ndarray, generation: int, stats,
         plt.show()
     else:
         plt.close()
+
+def plot_environment_optimum(stats,save_path: str = None, show_plot: bool = True) -> None:
+    history_by_generation = stats.alpha_history.copy()
+    history_matrix = np.column_stack(history_by_generation) # Złączamy wszystkie wektory optimum
+
+    plt.figure(figsize=(14, 6))
+    plt.title(f'Optymalne wartości fenotypu dla {history_matrix.shape[0]} elementowego wektora cech', size=16)
+    plt.xlabel('Pokolenia', size=14)
+    plt.ylabel('Wartość optimum', size=14)
+    plt.xlim(0, history_matrix.shape[1])
+    plt.grid(visible=True, axis="y")
+
+    for i, feature_row in enumerate(history_matrix):
+        plt.plot(feature_row, label=f"Cecha {i}")
+
+    plt.legend()
+    plt.tight_layout()
+    if save_path:
+        plt.savefig(save_path, dpi=100)
+    if show_plot:
+        plt.show()
+    else:
+        plt.close()
+
+    print(f"Wykres zależności optymalnych wartości cech zapisany do {save_path}")

@@ -22,7 +22,7 @@ from population import Population
 from mutation import IsotropicMutation
 from selection import TwoStageSelection
 from reproduction import AsexualReproduction
-from visualization import plot_population, plot_frame, plot_stats
+from visualization import plot_population, plot_frame, plot_stats, plot_environment_optimum
 from stats import SimulationStats
 from sexual_reproduction import SexualReproduction
 
@@ -204,6 +204,8 @@ def main():
     # --- Wykres statystyk ---
     plot_stats(stats, save_path="simulation_stats.png", show_plot=False)
     print("Wykres statystyk zapisany jako simulation_stats.png")
+
+    plot_environment_optimum(stats,"env.png",False)
 
 
 if __name__ == "__main__":
