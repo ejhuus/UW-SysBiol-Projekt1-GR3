@@ -60,7 +60,7 @@ bias = 0.02 # stały wzrost długości ogona, kierunkowa mutacja w stronę dłu�
 # UWAGA: alpha0 i c są wyprowadzane z n.
 # Wystarczy zmienić n powyżej – wektory środowiska dopasują się automatycznie.
 zero_crossing = np.zeros(n)                            # punkt równowagi optymalnego fenotypu
-amplitude = np.random.uniform(low=0, high=0.3,size =n) # Wektor amplitud, czyli największe możliwe odchylenie każdej z n cech fenotypu od punktu równowagi.
+amplitude = np.random.uniform(low=0, high=0.2,size =n) # Wektor amplitud, czyli największe możliwe odchylenie każdej z n cech fenotypu od punktu równowagi.
 period = np.full(n, 40)                        # Wektor okresów sinusoidy w generacjach.
 phase = np.random.uniform(low=-0.5, high=0.5,size = n)     # Wektor faz sinusoidy w generacjach.
 delta = np.random.uniform(low=0, high=0.01,size = n)   # Wektor odchyleń std. losowych fluktuacji wokół funkcji (0 = brak szumu).
@@ -80,4 +80,4 @@ max_generations = 200      # liczba pokoleń do zasymulowania
 # --------------------
 # seed = None  →  inne wyniki przy każdym uruchomieniu
 # seed = int   →  deterministyczne wyniki (do debugowania i raportów)
-seed = 42
+seed = 43
