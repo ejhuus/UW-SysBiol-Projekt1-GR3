@@ -147,12 +147,22 @@ def main():
     # --- Ziarno losowości (config.seed = None → inna symulacja za każdym razem) ---
     if config.seed is not None:
         np.random.seed(config.seed)
+    
+    zero_crossing = np.zeros(config.n)                            # punkt równowagi optymalnego fenotypu
+    amplitude = np.random.uniform(low=0, high=0.2,size =config.n) # Wektor amplitud, czyli największe możliwe odchylenie każdej z n cech fenotypu od punktu równowagi.
+    period = np.full(config.n, 40)                        # Wektor okresów sinusoidy w generacjach.
+    phase = np.random.uniform(low=-0.5, high=0.5,size = config.n)     # Wektor faz sinusoidy w generacjach.
+    delta = np.random.uniform(low=0, high=0.01,size = config.n)   # Wektor odchyleń std. losowych fluktuacji wokół funkcji (0 = brak szumu).
 
     # --- Inicjalizacja komponentów ---
     env = PeriodicConstEnvironment(
+        zero_crossing=zero_crossing,
+        amplitude=amplitude,
+        period=period,
+        phase=phase,
+        delta=delta,
         plateau_chance=config.plateau_chance,
-        mean_plateau_length=config.mean_plateau_length,
-        n = config.n
+        mean_plateau_length=config.mean_plateau_length
     )
     reproduction = ProbabilitySexualReproduction(
         tail_c=config.tail_cost,

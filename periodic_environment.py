@@ -13,10 +13,14 @@ class PeriodicConstEnvironment(EnvironmentDynamics):
     Możliwe też opcjonalne losowe fluktuacje w każdym pokoleniu.
     """
 
-    def __init__(self, 
+    def __init__(self,
+                 zero_crossing,
+                 amplitude,
+                 period,
+                 phase,
+                 delta, 
                  plateau_chance: float,
                  mean_plateau_length: float,
-                 n: int
                  ):
         """
             :param zero_crossing: punk równowagi, czyli wartość, wokół której oscyluje optimum.
@@ -29,14 +33,6 @@ class PeriodicConstEnvironment(EnvironmentDynamics):
             :param mean_plateau_length: Średnia długość równiny (1/P(równina skończy się w danej generacji)) w rozkładzie geometrycznym.
 
         """
-
-
-        zero_crossing = np.zeros(n)                            # punkt równowagi optymalnego fenotypu
-        amplitude = np.random.uniform(low=0, high=0.2,size =n) # Wektor amplitud, czyli największe możliwe odchylenie każdej z n cech fenotypu od punktu równowagi.
-        period = np.full(n, 40)                        # Wektor okresów sinusoidy w generacjach.
-        phase = np.random.uniform(low=-0.5, high=0.5,size = n)     # Wektor faz sinusoidy w generacjach.
-        delta = np.random.uniform(low=0, high=0.01,size = n)   # Wektor odchyleń std. losowych fluktuacji wokół funkcji (0 = brak szumu).
-
 
         # wave parameters
         self.zero_crossing = np.array(zero_crossing, dtype=float)

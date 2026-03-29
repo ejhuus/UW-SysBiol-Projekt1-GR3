@@ -78,7 +78,7 @@ def _run_replicate(args: tuple) -> tuple:
     from periodic_environment import PeriodicConstEnvironment
     from population import Population
     from mutation import IsotropicMutation
-    from selection import TwoStageSelection
+    from selection import TwoStageSelection, ThresholdSelection
     from reproduction import AsexualReproduction
     from visualization import plot_population, plot_frame, plot_stats, plot_environment_optimum
     from stats import SimulationStats
@@ -102,31 +102,50 @@ def _run_replicate(args: tuple) -> tuple:
         mut = IsotropicMutation(cfg['mu'], cfg['mu_c'], cfg['xi'])
     '''
 
+    zero_crossing = np.zeros(n)                            # punkt równowagi optymalnego fenotypu
+    amplitude = np.random.uniform(low=0, high=0.2,size =n) # Wektor amplitud, czyli największe możliwe odchylenie każdej z n cech fenotypu od punktu równowagi.
+    period = np.full(n, 40)                        # Wektor okresów sinusoidy w generacjach.
+    phase = np.random.uniform(low=-0.5, high=0.5,size = n)     # Wektor faz sinusoidy w generacjach.
+    delta = np.random.uniform(low=0, high=0.01,size = n)   # Wektor odchyleń std. losowych fluktuacji wokół funkcji (0 = brak szumu).
+
+    reproduction_dict = {
+        'asexual': AsexualReproduction,
+        'sexual': ProbabilitySexualReproduction
+    }
+    reproduction_class = reproduction_dict.get(cfg['reproduction'], AsexualReproduction)
+    repr_params = {}
+    if cfg['reproduction'] == 'sexual':
+        repr_params = {
+            'tail_c': cfg['tail_c'],
+            'temperature': cfg['temperature'],
+            'bias': cfg['bias']
+        }
+    reproduction = reproduction_class(**repr_params)
+
     env = PeriodicConstEnvironment(
+        zero_crossing=zero_crossing,
+        amplitude=amplitude,
+        period=period,
+        phase=phase,
+        delta=delta,
         plateau_chance=cfg['plateau_chance'],
         mean_plateau_length=cfg['mean_plateau_length'],
-        n = cfg['n']
     )
-    reproduction = ProbabilitySexualReproduction(
-        tail_c=cfg['tail_c'],
-        temperature=cfg['temperature'],
-        bias=cfg['bias'],
-    )
+    reproduction = reproduction
     pop = Population(
         size=cfg['N'],
         n_dim=cfg['n'],
         init_scale=cfg['init_scale'],
         # punkt startowy optimum z uwzględnieniem fazy.
         # w zależności od fazy pewne cechy mogą startować w znacznym oddaleniu od punktu równowagi
-        alpha_init=cfg['zero_crossing'] + cfg['amplitude'] * np.sin(cfg['phase']),
+        alpha_init=zero_crossing + amplitude * np.sin(phase),
         reproduction=reproduction,
         init_sex_ratio=cfg['init_sex_ratio'],
         init_scale_tail=cfg['init_scale_tail']
     )
-    selection = TwoStageSelection(
+    selection = ThresholdSelection(
         sigma=cfg['sigma'],
         threshold=cfg['threshold'],
-        N=cfg['N'],
         tail_cost=cfg['tail_cost']
 
     )
@@ -159,7 +178,7 @@ def _git_commit() -> str:
             stderr=subprocess.DEVNULL,
         ).decode().strip()
     except Exception:
-        return 'unknown'
+        return 'unknown'    
 
 
 def _stats_to_rows(stats) -> list:
@@ -175,6 +194,7 @@ def _stats_to_rows(stats) -> list:
             'n_parents':             r.n_parents,
             'median_offspring':      r.median_offspring,
             'max_offspring':         r.max_offspring,
+            'mean_tail':             r.mean_tail,
             'extinct':               0,
         }
         # Include any student-defined extra metrics as extra_<key> columns
