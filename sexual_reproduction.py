@@ -11,7 +11,7 @@ import random
 class SexualReproduction(ReproductionStrategy):
     """
     Reprodukcja płciowa z uwzględnieniem doboru płciowego:
-    Samiec losuje partnereki, aby uzyskać dokładnie target_size osobników nowego pokolenia.
+    Samiec losuje partnerki, aby uzyskać dokładnie target_size osobników nowego pokolenia.
     Ilość partnerek jest proporcjonalna do długości ogona, każda samica rodzi dwóch potomków, żeby
     populacja nie wymarła i podtrzymany był target_size.
     """
