@@ -9,6 +9,10 @@ inspect, and extend without modifying the core engine.
 
 ---
 
+## PDF raportu
+
+[Raport do projektu](RAPORT/Biologia_system_w_1_projekt.pdf)
+
 ## 📚 Documentation
 
 | Guide | Contents |
@@ -51,8 +55,8 @@ Each generation runs four steps in order:
 |------|-----------|----------------|
 | 1 | **Mutation** — each trait *i* shifts by N(0, ξ²) with probability μ_c; whole individual mutates with probability μ | `IsotropicMutation` |
 | 2 | **Selection** — individuals below a fitness threshold are removed; survivors are resampled proportionally to fitness up to N | `TwoStageSelection` |
-| 3 | **Reproduction** — survivors are drawn with replacement to restore population size N | `AsexualReproduction` |
-| 4 | **Environment update** — α shifts by **c** + N(0, δ²**I**) | `LinearShiftEnvironment` |
+| 3 | **Reproduction** — survivors are drawn with replacement to restore population size N | `AsexualReproduction`, `ProbabilitySexualReproduction`, `HierarchySexualReproduction` |
+| 4 | **Environment update** — α shifts by **c** + N(0, δ²**I**) | `LinearShiftEnvironment`, `PeriodicEnvironment` |
 
 > Mutation happens **before** selection, so new variation is exposed to
 > selection within the same generation — matching the standard FGM formulation.
@@ -95,16 +99,26 @@ next position of the optimum.*
 
 | Parameter | Default | Meaning |
 |-----------|---------|---------|
-| `n` | 4 | Phenotype space dimensionality |
-| `N` | 100 | Population size |
+| `n` | 10 | Phenotype space dimensionality |
+| `N` | 1000 | Population size |
 | `sigma` | 0.2 | Selection tolerance (smaller = stricter) |
 | `xi` | 0.05 | Per-trait mutation step size |
 | `mu` / `mu_c` | 0.1 / 0.5 | Mutation probabilities (per individual / per trait) |
-| `c` | `[0.01, …]` | Mean optimum drift per generation |
 | `delta` | 0.01 | Stochastic noise added to drift |
 | `threshold` | 0.01 | Minimum fitness for survival (stage 1 of selection) |
 | `init_scale` | 0.1 | Spread of initial phenotypes around α₀ |
+| `init_scale_tail` | 0.15 | Spread of initial tail size |
+| `init_sex_ratio` | 0.5 | Ratio of men population in proportion to female population. |
 | `seed` | 42 | RNG seed (`None` = different result each run) |
+| `bias` | 0.02 | Directional mutation of tail size (after inheriting tail this scalar is added) |
+| `tail_cost` | 0.6 | The cost of maintating a tail - decreases fitness |
+| `temperature` | 0.5 | Parameter controlling how much much the tail increases sexual selection. (smaller = more strict) |
+| `amplitude_low`, `amplitude_high` | 0/0.52 | Controlling the amplitude of the sinus wave |
+| `phase_low`, `phase_high` | -0.5/0.5 | Vector of phases of sinusoid |
+| `delta_low`, `delta_high` | 0/0.1 | Random fluctuations of the sinusoid |
+| `plateu_chance` | 0.2 | Probability of a plateu occuring |
+| `mean_plateu_length` | 8 | Mean length of a plateu |
+
 
 > `alpha0` and `c` are derived from `n` automatically — changing `n` is
 > safe; no manual vector resizing needed.
@@ -124,6 +138,9 @@ next position of the optimum.*
 | `selection.py` | `TwoStageSelection`, `ThresholdSelection`, `ProportionalSelection` |
 | `reproduction.py` | `AsexualReproduction` |
 | `environment.py` | `LinearShiftEnvironment` |
+| `periodic_environment.py` | `PeriodicEnvironment` |
+| `probability_sexual_reproduction.py` | `ProbabilitySexualReproduction` |
+| `hierarchy_sexual_reproduction.py` | `HierarchySexualReproduction` |
 | `stats.py` | `SimulationStats` — per-generation metrics, numpy array properties |
 | `visualization.py` | GIF frame generation and summary plots |
 | `run_experiment.py` | Single-experiment parallel runner |
