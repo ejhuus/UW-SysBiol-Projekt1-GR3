@@ -101,12 +101,12 @@ def _run_replicate(args: tuple) -> tuple:
         rep = AsexualReproduction()
         mut = IsotropicMutation(cfg['mu'], cfg['mu_c'], cfg['xi'])
     '''
-
+    
     zero_crossing = np.zeros(n)                            # punkt równowagi optymalnego fenotypu
-    amplitude = np.random.uniform(low=0, high=0.2,size =n) # Wektor amplitud, czyli największe możliwe odchylenie każdej z n cech fenotypu od punktu równowagi.
-    period = np.full(n, 40)                        # Wektor okresów sinusoidy w generacjach.
-    phase = np.random.uniform(low=-0.5, high=0.5,size = n)     # Wektor faz sinusoidy w generacjach.
-    delta = np.random.uniform(low=0, high=0.01,size = n)   # Wektor odchyleń std. losowych fluktuacji wokół funkcji (0 = brak szumu).
+    amplitude = np.random.uniform(low=cfg['amplitude_low'], high=cfg['amplitude_high'], size =n) # Wektor amplitud, czyli największe możliwe odchylenie każdej z n cech fenotypu od punktu równowagi.
+    period = np.full(n, cfg['period'])                        # Wektor okresów sinusoidy w generacjach.
+    phase = np.random.uniform(low=cfg["phase_low"], high=cfg["phase_high"],size = n)     # Wektor faz sinusoidy w generacjach.
+    delta = np.random.uniform(low=cfg["delta_low"], high=cfg["delta_high"],size = n)   # Wektor odchyleń std. losowych fluktuacji wokół funkcji (0 = brak szumu).
 
     reproduction_dict = {
         'asexual': AsexualReproduction,
@@ -195,6 +195,7 @@ def _stats_to_rows(stats) -> list:
             'median_offspring':      r.median_offspring,
             'max_offspring':         r.max_offspring,
             'mean_tail':             r.mean_tail,
+            'genetic_variance':      r.genetic_variance,
             'extinct':               0,
         }
         # Include any student-defined extra metrics as extra_<key> columns
@@ -234,7 +235,8 @@ def _write_summary(all_stats: list, out_dir: Path) -> None:
     """
     metrics = [
         'mean_fitness', 'distance_from_optimum', 'phenotype_variance',
-        'population_size', 'n_parents', 'median_offspring', 'max_offspring',
+        'population_size', 'n_parents', 'median_offspring', 'max_offspring', 'mean_tail', 
+        'genetic_variance'
     ]
 
     max_gen = max(

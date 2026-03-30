@@ -35,11 +35,18 @@
         18,
         19
     ],
-    "reproduction": "sexual",
     "max_generations": 200,
     "plateau_chance": 0.2,
     "mean_plateau_length": 8,
-    "sigma": 0.15,
-    "threshold": 0.05,
-    "name": "sexual_sigma_0.15_threshold_0.05"
+    "amplitude_low": 0,
+    "amplitude_high": 0.2,
+    "period": 40,
+    "phase_low": -0.5,
+    "phase_high": 0.5,
+    "delta_low": 0,
+    "delta_high": 0.01,
+    "reproduction": "sexual",
+    "sigma": 0.1,
+    "threshold": 0.2,
+    "name": "sexual_sigma_0.1_threshold_0.2"
 }

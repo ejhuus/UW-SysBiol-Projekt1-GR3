@@ -177,6 +177,8 @@ METRIC_LABELS = {
     "n_parents":             ("Evolutionary winners (≥1 offspring)", None),
     "median_offspring":      ("Median offspring (among reproducing)", None),
     "max_offspring":         ("Max offspring",             None),
+    "mean_tail":             ("Mean tail",                 None),
+    "genetic_variance":      ("Genetic variance",          None)
 }
 
 COLORS = {"A": "#2196F3", "B": "#E91E63"}   # blue / pink

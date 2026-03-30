@@ -26,13 +26,14 @@ class GenerationRecord:
     phenotype_variance: float     # uśredniona wariancja po wymiarach (miara różnorodności)
     distance_from_optimum: float  # ||mean_phenotype - alpha||
     population_size: int
+    genetic_variance: float
     # --- Statystyki reprodukcji ---
     n_parents: int        = 0    # ilu osobników miało ≥1 potomka
     median_offspring: float = 0.0  # mediana potomków wśród reprodukujących się
     max_offspring: int    = 0    # maksymalna płodność ("zwycięzca ewolucyjny")
     # --- Pole rozszerzenia – studenci mogą tu dodać własne metryki ---
     # Przykład użycia w własnej symulacji:
-    mean_tail: float = 0.0
+    mean_tail: float = 0.0,
     extra: dict           = field(default_factory=dict)
 
 
@@ -91,6 +92,16 @@ class SimulationStats:
         distance = float(np.linalg.norm(mean_phenotype - alpha))
         mean_fitness = float(fitnesses.mean())
 
+        all_alleles = []
+        for ind in individuals:
+            if ind.is_diploid():
+                all_alleles.append(ind.phenotype[0])
+                all_alleles.append(ind.phenotype[1])
+            else:
+                all_alleles.append(ind.phenotype)
+        genetic_pool = np.array(all_alleles)
+        genetic_variance = float(genetic_pool.var(axis=0).mean())
+
         males = [ind for ind in individuals if ind.get_sex() == "M"]
         tails = np.array([ind.get_tail() for ind in males])
         mean_tail = float(tails.mean()) if len(tails) > 0 else 0.0
@@ -109,7 +120,8 @@ class SimulationStats:
             n_parents=repro.get('n_parents', 0),
             median_offspring=repro.get('median_offspring', 0.0),
             max_offspring=repro.get('max_offspring', 0),
-            mean_tail=mean_tail
+            mean_tail=mean_tail,
+            genetic_variance=genetic_variance
         ))
 
     def mark_extinct(self, generation: int) -> None:
